@@ -10,11 +10,26 @@ export class FindUserService {
   }
 }
 
+export class FindUserByEmailService {
+  async execute(email: string) {
+    return await prismaClient.user.findUnique({
+      where: { email },
+    });
+  }
+}
+
 export class CreateUserService {
   async execute(user: IUser) {
     const newUser = {
-      ...user,
+      email: user.email,
       password: await createdHashPassword(user.password),
+      name: user.name,
+      id_document: user.idDocument,
+      id_condominium: user.idCondominium,
+      phone_number: user.phoneNumber,
+      block: user.block,
+      apartment: user.apartment,
+      role: user.role,
     };
 
     await prismaClient.user.create({
@@ -24,18 +39,23 @@ export class CreateUserService {
 }
 
 export class EditUserService {
-  async execute(userEmail: string, user: IUser) {
+  async execute(userId: string, user: IUser) {
     const newUser = {
-      ...user,
+      email: user.email,
       password: await createdHashPassword(user.password),
+      name: user.name,
+      id_document: user.idDocument,
+      id_condominium: user.idCondominium,
+      phone_number: user.phoneNumber,
+      block: user.block,
+      apartment: user.apartment,
+      role: user.role,
       updated_at: new Date(),
     };
 
-    console.log("--------------", newUser);
-
     await prismaClient.user.update({
       where: {
-        email: userEmail,
+        id: userId,
       },
       data: newUser,
     });
@@ -43,10 +63,10 @@ export class EditUserService {
 }
 
 export class DeleteUserService {
-  async execute(email: string) {
+  async execute(id: string) {
     await prismaClient.user.delete({
       where: {
-        email,
+        id,
       },
     });
   }

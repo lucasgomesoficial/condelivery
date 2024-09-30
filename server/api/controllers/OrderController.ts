@@ -5,11 +5,12 @@ import {
   EditOrderService,
   FindOrderService,
   FindOrderUserService,
-  ListOrderUserService,
+  ListOrdersUserService,
 } from "../services/OrderService";
 import { FindUserService } from "../services/UserService";
 import { IUpdateOrder, IUser, Status } from "../types";
 import { updateOrderSchema } from "../utils/vinejs";
+import { generateReceivingCode } from "../utils/generate-receiving-code";
 
 const SECRET_KEY = process.env.SECRET_KEY as string;
 
@@ -29,7 +30,7 @@ const listOrder = async (req: FastifyRequest, reply: FastifyReply) => {
     const { userId } = req.params as { userId: string };
 
     const findOrderUser = new FindOrderUserService();
-    const listOrderUser = new ListOrderUserService();
+    const listOrderUser = new ListOrdersUserService();
     const findOrder = new FindOrderService();
     const findUser = new FindUserService();
 
@@ -59,7 +60,7 @@ const listOrder = async (req: FastifyRequest, reply: FastifyReply) => {
     for (const element of orderUser) {
       const orderUserList = await listOrderUser.execute(element?.orderId);
 
-      const orderClient = orderUserList.find(({ id }) => id !== userId);
+      const orderClient = orderUserList.find(({ userId: id }) => id !== userId);
 
       const order = await findOrder.execute(element?.orderId);
 
@@ -101,12 +102,20 @@ const updateOrder = async (req: FastifyRequest, reply: FastifyReply) => {
 
     const { orderId, roleUser } = updateOrderBody;
 
+    const findOrder = new FindOrderService();
+    const order = await findOrder.execute(orderId);
+
     const newStatus = roleUser === "User" ? "Delivered" : "OnItsWay";
+    const receivingCode = order?.receivingCode
+      ? order?.receivingCode
+      : generateReceivingCode();
 
     const newOrder = {
-      receivingCode: Number(orderId.slice(-4)),
+      receivingCode: receivingCode,
       status: newStatus as Status,
     };
+
+    console.log(newOrder);
 
     const userService = new EditOrderService();
     await userService.execute(orderId, newOrder);

@@ -1,9 +1,9 @@
 import { errors } from "@vinejs/vine";
 import { FastifyReply, FastifyRequest } from "fastify";
 import jwt from "jsonwebtoken";
+import { FindUserByEmailService } from "../services/UserService";
 import { verifyPassword } from "../utils/bcrypt";
 import { loginSchema } from "../utils/vinejs";
-import { FindUserService } from "../services/UserService";
 
 const SECRET_KEY = process.env.SECRET_KEY as string;
 
@@ -12,7 +12,7 @@ const login = async (req: FastifyRequest, reply: FastifyReply) => {
     const { email, password } = req.body as { email: string; password: string };
     const { auth } = await loginSchema(email, password);
 
-    const findUser = new FindUserService();
+    const findUser = new FindUserByEmailService();
     const user = await findUser.execute(email);
 
     if (!user) {
@@ -44,7 +44,7 @@ const login = async (req: FastifyRequest, reply: FastifyReply) => {
       message: "Login successfully",
       data: {
         token,
-        email: user.email,
+        id: user.id,
       },
     });
   } catch (error) {

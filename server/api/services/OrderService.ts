@@ -9,7 +9,7 @@ export class FindOrderUserService {
   }
 }
 
-export class ListOrderUserService {
+export class ListOrdersUserService {
   async execute(orderId: string) {
     return await prismaClient.orderUser.findMany({
       where: { orderId },

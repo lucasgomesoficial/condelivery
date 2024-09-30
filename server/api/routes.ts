@@ -13,7 +13,7 @@ export const routes = async (fastify: FastifyInstance) => {
   });
 
   fastify.get(
-    "/user/:userEmail",
+    "/user/:userId",
     async (req: FastifyRequest, reply: FastifyReply) => {
       return await userControllers.findUser(req, reply);
     }
@@ -24,21 +24,21 @@ export const routes = async (fastify: FastifyInstance) => {
   });
 
   fastify.put(
-    "/user/:userEmail",
+    "/user/:userId",
     async (req: FastifyRequest, reply: FastifyReply) => {
       return await userControllers.editUser(req, reply);
     }
   );
 
   fastify.delete(
-    "/user/:userEmail",
+    "/user/:userId",
     async (req: FastifyRequest, reply: FastifyReply) => {
       return await userControllers.deleteUser(req, reply);
     }
   );
 
   fastify.get(
-    "/order-list/:userId",
+    "/orders-list/:userId",
     async (req: FastifyRequest, reply: FastifyReply) => {
       return await orderControllers.listOrder(req, reply);
     }

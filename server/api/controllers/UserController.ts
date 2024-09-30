@@ -25,10 +25,10 @@ const findUser = async (req: FastifyRequest, reply: FastifyReply) => {
       }
     });
 
-    const { userEmail } = req.params as { userEmail: string };
+    const { userID } = req.params as { userID: string };
 
     const findUser = new FindUserService();
-    const user = await findUser.execute(userEmail);
+    const user = await findUser.execute(userID);
 
     if (!user) {
       return reply.status(200).send({
@@ -48,14 +48,7 @@ const createdUser = async (req: FastifyRequest, reply: FastifyReply) => {
   try {
     const { userBody } = await userSchema(req.body as IUser);
 
-    const { role } = userBody as {
-      role: "User" | "Collaborator" | "Admin";
-    };
-
-    const newUser = {
-      ...userBody,
-      role,
-    };
+    const newUser = userBody as IUser;
 
     const userService = new CreateUserService();
     await userService.execute(newUser);
@@ -98,25 +91,13 @@ const editUser = async (req: FastifyRequest, reply: FastifyReply) => {
       }
     });
 
-    const { userEmail } = req.params as { userEmail: string };
+    const { userId } = req.params as { userId: string };
     const { userBody } = await userSchema(req.body as IUser);
 
-    const { role } = userBody as { role: "User" | "Collaborator" | "Admin" };
-
-    const newUser = {
-      email: userBody.email,
-      password: userBody.password,
-      name: userBody.name,
-      id_document: userBody.idDocument,
-      phone_number: userBody.phoneNumber,
-      id_condominium: userBody.idCondominium,
-      block: userBody.block,
-      apartment: userBody.apartment,
-      role,
-    };
+    const newUser = userBody as IUser;
 
     const userService = new EditUserService();
-    await userService.execute(userEmail, newUser);
+    await userService.execute(userId, newUser);
 
     return reply.status(200).send({
       statusCode: 200,
@@ -156,10 +137,10 @@ const deleteUser = async (req: FastifyRequest, reply: FastifyReply) => {
       }
     });
 
-    const { userEmail } = req.params as { userEmail: string };
+    const { userId } = req.params as { userId: string };
 
     const userService = new DeleteUserService();
-    await userService.execute(userEmail);
+    await userService.execute(userId);
 
     return reply.status(200).send({
       statusCode: 200,
