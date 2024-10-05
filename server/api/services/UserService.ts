@@ -4,7 +4,7 @@ import { createdHashPassword } from "../utils/bcrypt";
 
 export class FindUserService {
   async execute(id: string) {
-    return await prismaClient.user.findFirst({
+    return await prismaClient.user.findUnique({
       where: { id },
     });
   }

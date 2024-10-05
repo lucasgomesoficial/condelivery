@@ -8,7 +8,13 @@ import {
   ListOrdersUserService,
 } from "../services/OrderService";
 import { FindUserService } from "../services/UserService";
-import { IUpdateOrder, IUser, Status } from "../types";
+import {
+  IUpdateOrder,
+  IUser,
+  OrderCollaborator,
+  OrderUser,
+  Status,
+} from "../types";
 import { updateOrderSchema } from "../utils/vinejs";
 import { generateReceivingCode } from "../utils/generate-receiving-code";
 
@@ -45,16 +51,17 @@ const listOrder = async (req: FastifyRequest, reply: FastifyReply) => {
       });
     }
 
-    const result: any = [];
+    const resultClient: OrderUser[] = [];
+    const resultCollaborator: OrderCollaborator[] = [];
 
     if (role === "User") {
       for (const element of orderUser) {
-        const order = await findOrder.execute(element?.orderId);
+        const order = (await findOrder.execute(element?.orderId)) as OrderUser;
 
-        result.push(...result, order);
+        resultClient.push(order);
       }
 
-      return reply.status(200).send(result);
+      return reply.status(200).send(resultClient);
     }
 
     for (const element of orderUser) {
@@ -71,12 +78,12 @@ const listOrder = async (req: FastifyRequest, reply: FastifyReply) => {
         resident: client?.name,
         block: client?.block,
         apartment: client?.apartment,
-      };
+      } as OrderCollaborator;
 
-      result.push(...result, newOrder);
+      resultCollaborator.push(newOrder);
     }
 
-    return reply.status(200).send(result);
+    return reply.status(200).send(resultCollaborator);
   } catch (error) {
     const { message } = error as { message: string };
     return reply.status(500).send({ error: message });

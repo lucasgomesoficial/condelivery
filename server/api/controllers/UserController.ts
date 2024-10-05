@@ -25,10 +25,10 @@ const findUser = async (req: FastifyRequest, reply: FastifyReply) => {
       }
     });
 
-    const { userID } = req.params as { userID: string };
+    const { userId } = req.params as { userId: string };
 
     const findUser = new FindUserService();
-    const user = await findUser.execute(userID);
+    const user = await findUser.execute(userId);
 
     if (!user) {
       return reply.status(200).send({
