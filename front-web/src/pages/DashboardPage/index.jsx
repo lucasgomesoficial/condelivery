@@ -1,18 +1,15 @@
-import {Header} from "../../components/index";
-import { useFetchDelivery } from "../../hook/use-fetch-delivery";
-import { Delivery } from "./components/delivery";
+import { Header } from "../../components/index";
+import { useAuth } from "../../hook/use-auth";
+import { renderWithRole } from "./config/render-with-role";
 
 export function Dashboard() {
-  const { deliveryMock, isLoading } = useFetchDelivery();
+  const { userData } = useAuth();
   return (
     <>
       <Header />
       <section className="px-14 pt-12 mt-12">
         <div className="flex flex-wrap justify-center gap-4">
-          <Delivery
-            delivery={deliveryMock} 
-            isLoading={isLoading}
-          />
+          {renderWithRole(userData.current.role)}
         </div>
       </section>
     </>

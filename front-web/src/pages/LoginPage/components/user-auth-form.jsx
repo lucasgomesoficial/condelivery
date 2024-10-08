@@ -1,27 +1,24 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { useAuth } from "../../../context/authProvider";
-
 import { cn } from "@/lib/utils";
-import { Icons, Button, Input, Label } from "../../../components/index";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { Button, Icons, Input, Label } from "../../../components/index";
+import { useAuth } from "../../../hook/use-auth";
 import { RegisterNewAccount } from "./registerNewAccount";
+import { ROUTER_CONFIG } from "../../../config/constants";
 
 export function UserAuthForm({ className, ...props }) {
-  const [isLoading, setIsLoading] = useState(false);
-  const { signin } = useAuth();
+  const { signin, isLoading } = useAuth();
   const navigate = useNavigate();
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-  function onSubmit(data) {
-    setIsLoading(true)
-
-    function callback() {
-      navigate("/dashboard")
-      setIsLoading(false)
-    }
-
-    signin(data, callback);
+  function onSubmit({ email, password }) {
+    signin({ email, password }, () => {
+      navigate(ROUTER_CONFIG.DASHBOARD, { replace: true });
+    });
   }
 
   return (
@@ -34,7 +31,9 @@ export function UserAuthForm({ className, ...props }) {
             </Label>
             <Input
               id="email"
-              placeholder="E-mail"
+              placeholder={
+                errors.email ? "Esse campo é obrigatório" : "matilde@org.com.br"
+              }
               type="email"
               autoCapitalize="none"
               autoComplete="email"
@@ -49,12 +48,16 @@ export function UserAuthForm({ className, ...props }) {
             </Label>
             <Input
               id="password"
-              placeholder="Senha"
+              placeholder={
+                errors.password
+                  ? "Esse campo é obrigatório"
+                  : "Digite sua senha"
+              }
               type="password"
               autoCapitalize="none"
               autoCorrect="off"
               disabled={isLoading}
-              {...register("password")}
+              {...register("password", { required: true })}
             />
           </div>
           <Button disabled={isLoading}>

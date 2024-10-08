@@ -16,22 +16,23 @@ const RegisterScreen = () => {
 
  const cadastrar = async () => {
     const dadosCadastro = {
-      nomeCompleto: nomeCompleto, //confirma nome do campo dos parametros que ele espera receber ver Lucas
+      nomeCompleto: nomeCompleto, 
       email: email,
-      senha: senha,
+      password: senha,
       role: selectedRole, // Morador ou colaborador
     };
 
     console.log('Dados cadastrados:', dadosCadastro);
 
-    // Chamar a API para cadastro
-     api.post('/user', dadosCadastro, { headers: { 'Content-Type': 'application/json' } }) //endpoint de cadastrar ver Lucas
-      .then(response => {
-        navigation.navigate('Profile');
-      })
-      .catch(error => {
-        alert("erro Api", JSON.stringify(error ))
-      });
+   // Chamar a API para cadastro
+     //api.post('/user', dadosCadastro, { headers: { 'Content-Type': 'application/json' } }) 
+     //.then(response => {
+     //  navigation.navigate('Profile');
+    // })
+     //.catch(error => {
+        //alert("erro Api", JSON.stringify(error ))
+   //  });
+         navigation.navigate('Profile');
   };
 
 

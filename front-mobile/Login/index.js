@@ -10,24 +10,24 @@ const Login = () => {
   const [senha, setSenha] = useState('');
   const [emailFocused, setEmailFocused] = useState(false);
   const [senhaFocused, setSenhaFocused] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false);
 
-  async function irProfile() { // preciso que o Lucas me passe o endpoin de login e os nomes dos campos que preciso passar
-     api
-      .post(
-      `/login`,
+  async function irProfile() { 
+   api
+     .post(
+     `/login`,
         { email: email, password: senha }, 
        {
-         headers: { 'Content-Type': 'application/json' },
-        }
+        headers: { 'Content-Type': 'application/json' },
+      }
       )
-      .then((response) => {
-        navigation.navigate('Profile');
+    .then((response) => {
+       navigation.navigate('Profile');
       })
       .catch((error) => {
-        alert("erro Api", JSON.stringify(error))
-      });
-    //navigation.navigate('Profile'); 
+       alert("erro Api", JSON.stringify(error))
+     });
+    navigation.navigate('Profile'); 
   }
 
   async function esqueciSenha() {

@@ -1,27 +1,49 @@
 import React from "react";
-
-const delivery = [
-  { orderNumber: "#0001", orderStatus: "received", tokenDelivery: "8885" },
-  { orderNumber: "#0002", orderStatus: "preparing", tokenDelivery: "8886" },
-  { orderNumber: "#0003", orderStatus: "sending", tokenDelivery: "8887" },
-];
+import { api } from "../service/api";
+import { getFromLocalStorage } from "../utils/localStorage";
 
 export const useFetchDelivery = () => {
-  const [isLoading, setIsLoading] = React.useState(true); 
-  const [deliveryMock, setDeliveryMock] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [delivery, setDelivery] = React.useState([]);
 
-  const fecthDelivey = () => {
-    setTimeout(() => {
-      setDeliveryMock(delivery);
+  const { userAuth } = getFromLocalStorage("userAuth");
+
+  const fecthDelivey = React.useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const { data } = await api.get(`/orders-list/${userAuth.id}`, {
+        headers: { token: userAuth.token },
+      });
+
+      setDelivery(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
       setIsLoading(false);
-    }, 3000);
-  }
+    }
+  }, [userAuth.id, userAuth.token]);
+
+  const updateOrder = React.useCallback(
+    async (data) => {
+      try {
+        await api.put("/order-update", data, {
+          headers: { token: userAuth.token },
+        });
+        fecthDelivey();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [fecthDelivey, userAuth.token]
+  );
+
   React.useEffect(() => {
     fecthDelivey();
-  }, []);
+  }, [fecthDelivey]);
 
   return {
-    isLoading, 
-    deliveryMock,
+    isLoading,
+    delivery,
+    updateOrder,
   };
 };

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: ''
+  baseURL: 'https://condelivery-production.up.railway.app/'
 });
 
 export default api;

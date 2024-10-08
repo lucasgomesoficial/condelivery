@@ -1,13 +1,15 @@
-import { Route, Routes, Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "../context/authProvider";
-// import { routes, routesProtect } from "./config";
-import { Login, Dashboard, ErrorPage, Profile } from "../pages/index";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { ROUTER_CONFIG } from "../config/constants";
+import { Dashboard, ErrorPage, Login, Profile } from "../pages/index";
+import { getFromLocalStorage } from "../utils/localStorage";
 
 function RequireAuth({ children }) {
   const location = useLocation();
-  const { user } = useAuth();
-  if (!user) {
-    return <Navigate to="/" state={{ path: location.pathname }} />;
+  const { userAuth } = getFromLocalStorage("userAuth");
+  if (!userAuth) {
+    return (
+      <Navigate to={ROUTER_CONFIG.LOGIN} state={{ path: location.pathname }} />
+    );
   }
 
   return children;
@@ -16,10 +18,10 @@ function RequireAuth({ children }) {
 export function Navigation() {
   return (
     <Routes>
-      <Route path="/" element={<Login />} />;
-      <Route path="*" element={<ErrorPage />} />;
+      <Route path={ROUTER_CONFIG.LOGIN} element={<Login />} />;
+      <Route path={ROUTER_CONFIG.ERROR} element={<ErrorPage />} />;
       <Route
-        path="/dashboard"
+        path={ROUTER_CONFIG.DASHBOARD}
         element={
           <RequireAuth>
             <Dashboard />
@@ -27,30 +29,13 @@ export function Navigation() {
         }
       />
       <Route
-        path="/profile"
+        path={ROUTER_CONFIG.PROFILE}
         element={
           <RequireAuth>
             <Profile />
           </RequireAuth>
         }
       />
-      {/* {routes.map(({ path, component }) => {
-        return <Route key={path} path={path} element={component} />;
-      })}
-      {routesProtect.map(({ path, component: Component }) => {
-        console.log(Component)
-        return (
-          <Route
-            key={path}
-            path={path}
-            element={
-              <RequireAuth>
-                <Component />
-              </RequireAuth>
-            }
-          />
-        );
-      })} */}
     </Routes>
   );
 }

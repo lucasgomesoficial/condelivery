@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
+import { useCallback, useState } from "react";
+import { useDropzone } from "react-dropzone";
 
 export function ImageUpload() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -11,10 +11,20 @@ export function ImageUpload() {
     }
   }, []);
 
-  const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: 'image/*' });
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: "image/*",
+  });
 
   return (
-    <div {...getRootProps()} style={{ border: '2px dashed #cccccc', padding: '10px', cursor: 'pointer' }}>
+    <div
+      {...getRootProps()}
+      style={{
+        border: "2px dashed #cccccc",
+        padding: "10px",
+        cursor: "pointer",
+      }}
+    >
       <input {...getInputProps()} />
       <p>Selecione ou arraste sua imagem aqui</p>
       {selectedImage && (
@@ -25,4 +35,3 @@ export function ImageUpload() {
     </div>
   );
 }
-
