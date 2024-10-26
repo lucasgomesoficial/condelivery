@@ -16,6 +16,7 @@ export function Header() {
   }
 
   const isAdmin = userData.current.role === "Admin";
+  const isUser = userData.current.role === "User";
 
   return (
     <header className="flex justify-between items-center bg-primary w-full h-28 rounded-b-2xl text-white px-14 font-semibold">
@@ -24,6 +25,14 @@ export function Header() {
         <p>{formattedRole(userData.current.role)}</p>
       </div>
       <div className="flex items-center gap-3">
+        {isUser && (
+          <Button
+            className="px-2 bg-white text-secondary hover:bg-white border-2"
+            onClick={() => confirm("Deseja efetuar um pedido?")}
+          >
+            Criar pedido
+          </Button>
+        )}
         {!isAdmin && <Preferences />}
         <Suport />
         <Button

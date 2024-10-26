@@ -6,6 +6,7 @@ import { getFromLocalStorage } from "../utils/localStorage";
 function RequireAuth({ children }) {
   const location = useLocation();
   const { userAuth } = getFromLocalStorage("userAuth");
+
   if (!userAuth) {
     return (
       <Navigate to={ROUTER_CONFIG.LOGIN} state={{ path: location.pathname }} />
